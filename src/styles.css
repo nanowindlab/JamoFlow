@@ -1,0 +1,575 @@
+:root {
+  font-family: "Apple SD Gothic Neo", "SUIT", "Pretendard Variable", "Malgun Gothic",
+    sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #1f2240;
+  background:
+    radial-gradient(circle at top left, rgba(155, 196, 255, 0.56), transparent 42%),
+    linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  --ink: #1f2240;
+  --subtle: #6a6e8d;
+  --line: #b7d8ff;
+  --panel: rgba(255, 255, 255, 0.82);
+  --panel-strong: #ffffff;
+  --accent: #5b6ef5;
+  --accent-2: #914eac;
+  --accent-soft: #eef0ff;
+  --shadow: 0 18px 60px rgba(71, 87, 143, 0.16);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+button {
+  font: inherit;
+}
+
+#root {
+  width: 100%;
+}
+
+.app-shell {
+  width: min(1240px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0 56px;
+}
+
+.hero-panel,
+.selector-panel,
+.stage-card,
+.steps-card,
+.workbook-card {
+  backdrop-filter: blur(20px);
+  background: var(--panel);
+  border: 1px solid rgba(160, 194, 255, 0.56);
+  box-shadow: var(--shadow);
+}
+
+.hero-panel {
+  display: grid;
+  grid-template-columns: 1.45fr 0.95fr;
+  gap: 24px;
+  padding: 28px;
+  border-radius: 32px;
+  overflow: hidden;
+  position: relative;
+}
+
+.hero-panel::after {
+  content: "";
+  position: absolute;
+  inset: auto -10% -35% auto;
+  width: 360px;
+  height: 360px;
+  background: radial-gradient(circle, rgba(145, 78, 172, 0.18), transparent 70%);
+  pointer-events: none;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.hero-copy h1 {
+  margin: 0;
+  font-size: clamp(2.6rem, 7vw, 4.8rem);
+  line-height: 0.96;
+}
+
+.hero-description {
+  width: min(52ch, 100%);
+  margin: 18px 0 0;
+  font-size: 1.05rem;
+  color: var(--subtle);
+}
+
+.hero-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.hero-metrics div,
+.focus-card {
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(164, 191, 255, 0.52);
+  border-radius: 22px;
+}
+
+.hero-metrics div {
+  padding: 16px 18px;
+}
+
+.hero-metrics strong,
+.focus-char {
+  display: block;
+  font-size: 1.45rem;
+  font-weight: 800;
+}
+
+.hero-metrics span,
+.focus-note,
+.selector-subtitle,
+.step-copy {
+  color: var(--subtle);
+}
+
+.hero-focus {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+}
+
+.focus-label {
+  width: fit-content;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(91, 110, 245, 0.12);
+  color: var(--accent);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.focus-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 18px;
+}
+
+.focus-char {
+  display: grid;
+  place-items: center;
+  width: 92px;
+  min-width: 92px;
+  height: 92px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #6d7cf8, #974db2);
+  color: #fff;
+  font-size: 3rem;
+}
+
+.focus-title {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.focus-note {
+  margin: 0;
+}
+
+.replay-button {
+  width: fit-content;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 999px;
+  background: #1f2240;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 24px;
+  margin-top: 24px;
+  align-items: start;
+}
+
+.selector-panel,
+.stage-card,
+.steps-card,
+.workbook-card {
+  border-radius: 28px;
+}
+
+.selector-panel {
+  position: sticky;
+  top: 20px;
+  padding: 22px;
+}
+
+.group-switch {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.switch-chip,
+.jamo-chip {
+  border: 1px solid rgba(167, 188, 243, 0.72);
+  background: rgba(255, 255, 255, 0.86);
+  cursor: pointer;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.switch-chip {
+  padding: 12px;
+  border-radius: 18px;
+  font-weight: 700;
+}
+
+.switch-chip.active,
+.jamo-chip.active {
+  background: linear-gradient(135deg, rgba(91, 110, 245, 0.14), rgba(145, 78, 172, 0.16));
+  border-color: rgba(91, 110, 245, 0.64);
+  transform: translateY(-1px);
+}
+
+.selector-copy {
+  margin-top: 18px;
+}
+
+.selector-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.selector-subtitle {
+  margin: 6px 0 0;
+}
+
+.selector-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.jamo-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 8px;
+  border-radius: 20px;
+  color: var(--ink);
+}
+
+.jamo-chip span {
+  font-size: 1.7rem;
+  font-weight: 800;
+}
+
+.jamo-chip small {
+  color: var(--subtle);
+}
+
+.study-column {
+  display: grid;
+  gap: 24px;
+}
+
+.stage-card,
+.steps-card,
+.workbook-card {
+  padding: 24px;
+}
+
+.stage-header,
+.section-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.stage-header h2,
+.section-title h3 {
+  margin: 0;
+  font-size: 1.55rem;
+  font-weight: 800;
+}
+
+.stage-header h2 span {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--subtle);
+}
+
+.stage-badge,
+.section-title span {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.stage-canvas {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: block;
+  color: var(--accent-2);
+}
+
+.guide-outline {
+  fill: rgba(255, 255, 255, 0.86);
+  stroke: rgba(164, 205, 255, 0.88);
+  stroke-width: 1.6;
+}
+
+.guide-line {
+  stroke: rgba(177, 215, 255, 0.82);
+  stroke-width: 1;
+  stroke-dasharray: 5 5;
+}
+
+.stage-watermark {
+  fill: rgba(130, 143, 195, 0.12);
+  font-size: 70px;
+  text-anchor: middle;
+  font-weight: 800;
+}
+
+.stroke-guide,
+.workbook-outline {
+  fill: none;
+  stroke: rgba(188, 194, 222, 0.6);
+  stroke-width: 9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.stroke-main,
+.workbook-stroke {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.stroke-main {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: drawStroke 0.48s ease forwards;
+  animation-delay: var(--stroke-delay);
+  opacity: 0.9;
+}
+
+.stroke-start,
+.stroke-order {
+  opacity: 0;
+  animation: revealDot 0.01s linear forwards;
+  animation-delay: var(--stroke-delay);
+}
+
+.stroke-start {
+  fill: currentColor;
+}
+
+.stroke-order circle {
+  fill: rgba(31, 34, 64, 0.94);
+}
+
+.stroke-order text {
+  fill: #fff;
+  font-size: 8px;
+  text-anchor: middle;
+  font-weight: 700;
+}
+
+.step-list {
+  display: grid;
+  gap: 12px;
+}
+
+.step-item {
+  display: flex;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(184, 200, 244, 0.55);
+}
+
+.step-number {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  min-width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: #1f2240;
+  color: #fff;
+  font-weight: 800;
+}
+
+.step-label {
+  margin: 0;
+  font-weight: 800;
+}
+
+.step-copy {
+  margin: 4px 0 0;
+}
+
+.workbook-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0;
+  border: 2px solid rgba(171, 214, 255, 0.92);
+  overflow: hidden;
+  border-radius: 22px;
+}
+
+.workbook-cell {
+  min-height: 150px;
+  border-right: 1px solid rgba(171, 214, 255, 0.92);
+  border-bottom: 1px solid rgba(171, 214, 255, 0.92);
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.84);
+}
+
+.workbook-cell:nth-child(6),
+.workbook-cell:nth-child(12) {
+  border-right: none;
+}
+
+.workbook-cell:nth-last-child(-n + 6) {
+  border-bottom: none;
+}
+
+.workbook-step {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.workbook-glyph {
+  width: 100%;
+  height: 108px;
+  display: block;
+  margin-top: 6px;
+  color: #26326b;
+}
+
+.workbook-watermark {
+  fill: rgba(130, 143, 195, 0.08);
+  font-size: 62px;
+  text-anchor: middle;
+  font-weight: 800;
+}
+
+.workbook-empty,
+.workbook-cell--blank {
+  width: 100%;
+  height: 100%;
+}
+
+.practice-label {
+  display: inline-block;
+  margin-top: 8px;
+  color: rgba(106, 110, 141, 0.72);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+@keyframes drawStroke {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes revealDot {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 980px) {
+  .hero-panel,
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .selector-panel {
+    position: static;
+  }
+}
+
+@media (max-width: 760px) {
+  .app-shell {
+    width: min(100% - 20px, 100%);
+    padding: 20px 0 40px;
+  }
+
+  .hero-panel,
+  .selector-panel,
+  .stage-card,
+  .steps-card,
+  .workbook-card {
+    padding: 18px;
+    border-radius: 24px;
+  }
+
+  .hero-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .focus-card {
+    align-items: flex-start;
+  }
+
+  .selector-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .workbook-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .workbook-cell:nth-child(3),
+  .workbook-cell:nth-child(6),
+  .workbook-cell:nth-child(9),
+  .workbook-cell:nth-child(12) {
+    border-right: none;
+  }
+
+  .workbook-cell:nth-child(6),
+  .workbook-cell:nth-child(12) {
+    border-right: none;
+  }
+
+  .workbook-cell {
+    border-right: 1px solid rgba(171, 214, 255, 0.92);
+  }
+
+  .workbook-cell:nth-child(6),
+  .workbook-cell:nth-child(12) {
+    border-right: none;
+  }
+
+  .workbook-cell:nth-child(3),
+  .workbook-cell:nth-child(9) {
+    border-right: none;
+  }
+
+  .workbook-cell:nth-last-child(-n + 3) {
+    border-bottom: none;
+  }
+}
