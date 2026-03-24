@@ -1,4 +1,4 @@
-import type { JamoItem, Stroke } from '../types';
+import type { ExampleWord, JamoItem, JamoValidation, Stroke } from '../types';
 
 const line = (
   id: string,
@@ -12,6 +12,23 @@ const line = (
   label: `${order}획`,
   description,
   svgPath: `M ${start[0]} ${start[1]} L ${end[0]} ${end[1]}`,
+  start,
+  end,
+});
+
+const pathStroke = (
+  id: string,
+  order: number,
+  svgPath: string,
+  start: [number, number],
+  end: [number, number],
+  description: string,
+): Stroke => ({
+  id,
+  order,
+  label: `${order}획`,
+  description,
+  svgPath,
   start,
   end,
 });
@@ -55,7 +72,31 @@ const makeItem = (
   strokes,
 });
 
-export const jamoItems: JamoItem[] = [
+const source = (
+  label: string,
+  kind: 'workbook' | 'web' | 'internal_note',
+  url?: string,
+) => ({
+  label,
+  kind,
+  url,
+  checkedAt: '2026-03-24',
+});
+
+const review = (
+  status: JamoValidation['status'],
+  notes: string,
+  sources: JamoValidation['sources'],
+): JamoValidation => ({
+  status,
+  notes,
+  sources,
+  reviewedAt: '2026-03-24',
+});
+
+const words = (...items: ExampleWord[]) => items;
+
+const baseJamoItems: JamoItem[] = [
   makeItem(
     'ㄱ',
     '기역',
@@ -94,14 +135,26 @@ export const jamoItems: JamoItem[] = [
     'ㄹ',
     '리을',
     'consonant',
-    '오른쪽으로 긋고 내려온 뒤, 왼쪽으로 꺾어 다시 내려와 마무리합니다.',
+    '첫 획에서 윗가로선을 긋고 오른쪽 아래로 꺾은 뒤, 가운데 가로선과 마지막 연결획을 차례로 씁니다.',
     '라',
     [
-      line('r-1', 1, [24, 24], [96, 24], '윗가로선을 긋기'),
-      line('r-2', 2, [96, 24], [96, 54], '오른쪽 끝에서 아래로 내리기'),
-      line('r-3', 3, [96, 54], [24, 54], '가운데 가로선을 오른쪽에서 왼쪽으로 긋기'),
-      line('r-4', 4, [24, 54], [24, 82], '왼쪽에서 아래로 내리기'),
-      line('r-5', 5, [24, 82], [96, 82], '아랫가로선을 긋기'),
+      pathStroke(
+        'r-1',
+        1,
+        'M 24 24 L 96 24 L 96 54',
+        [24, 24],
+        [96, 54],
+        '윗가로선을 긋고 오른쪽 끝에서 아래로 꺾어 내리기',
+      ),
+      line('r-2', 2, [40, 54], [96, 54], '가운데 가로선을 왼쪽에서 오른쪽으로 긋기'),
+      pathStroke(
+        'r-3',
+        3,
+        'M 24 54 L 24 82 L 96 82',
+        [24, 54],
+        [96, 82],
+        '왼쪽 세로선을 아래로 내린 뒤 아랫가로선으로 이어 쓰기',
+      ),
     ],
   ),
   makeItem(
@@ -121,14 +174,13 @@ export const jamoItems: JamoItem[] = [
     'ㅂ',
     '비읍',
     'consonant',
-    '왼쪽 세로선으로 시작한 뒤 윗선, 오른쪽 선, 가운데 선, 아랫선을 차례로 더합니다.',
+    '왼쪽 세로선과 오른쪽 세로선을 먼저 쓴 뒤, 가운데 가로선과 아랫가로선을 더합니다.',
     '바',
     [
       line('b-1', 1, [26, 24], [26, 98], '왼쪽 세로선을 내리기'),
-      line('b-2', 2, [26, 24], [92, 24], '윗가로선을 긋기'),
-      line('b-3', 3, [92, 24], [92, 98], '오른쪽 세로선을 내리기'),
-      line('b-4', 4, [26, 62], [92, 62], '가운데 가로선을 긋기'),
-      line('b-5', 5, [26, 98], [92, 98], '아랫가로선을 긋기'),
+      line('b-2', 2, [92, 24], [92, 98], '오른쪽 세로선을 내리기'),
+      line('b-3', 3, [26, 62], [92, 62], '가운데 가로선을 긋기'),
+      line('b-4', 4, [26, 98], [92, 98], '아랫가로선을 긋기'),
     ],
   ),
   makeItem(
@@ -334,6 +386,210 @@ export const jamoItems: JamoItem[] = [
     [line('i-1', 1, [60, 16], [60, 104], '세로선을 위에서 아래로 내리기')],
   ),
 ];
+
+const validationById: Record<string, JamoValidation> = {
+  ㄱ: review('confirmed', '교재와 Wikimedia 파일 페이지 기준으로 현재 2획 순서를 유지할 수 있음', [
+    source('사회통합프로그램 한글 자모음 교재', 'workbook'),
+    source('Wikimedia Commons giyeok stroke order', 'web', 'https://commons.wikimedia.org/wiki/File:%E3%84%B1_(giyeok)_stroke_order.png'),
+  ]),
+  ㄴ: review('confirmed', '교재와 Wikimedia 파일 페이지 기준으로 현재 2획 순서를 유지할 수 있음', [
+    source('사회통합프로그램 한글 자모음 교재', 'workbook'),
+    source('Wikimedia Commons nieun stroke order', 'web', 'https://commons.wikimedia.org/wiki/File:%E3%84%B4_(nieun)_stroke_order.png'),
+  ]),
+  ㄷ: review('confirmed', '교재와 Wikimedia 파일 페이지 기준으로 현재 3획 순서를 유지할 수 있음', [
+    source('사회통합프로그램 한글 자모음 교재', 'workbook'),
+    source('Wikimedia Commons digeut stroke order', 'web', 'https://commons.wikimedia.org/wiki/File:%E3%84%B7_(digeut)_stroke_order.png'),
+  ]),
+  ㄹ: review('confirmed', '교재와 Wikimedia 획순 자료 모두 3획이며 마지막 획을 세로+아랫가로 연결획으로 읽을 수 있음', [
+    source('사회통합프로그램 한글 자모음 교재', 'workbook'),
+    source('Wikimedia Commons rieul stroke order', 'web', 'https://commons.wikimedia.org/wiki/File:%E3%84%B9_(rieul)_stroke_order.png'),
+  ]),
+  ㅁ: review('confirmed', '교재와 Wikimedia 파일 페이지 기준으로 현재 4획 구조를 유지할 수 있음', [
+    source('사회통합프로그램 한글 자모음 교재', 'workbook'),
+    source('Wikimedia Commons mieum stroke order', 'web', 'https://commons.wikimedia.org/wiki/File:%E3%85%81_(mieum)_stroke_order.png'),
+  ]),
+  ㅂ: review('confirmed', '교재 확대본 기준으로 4획이며, 좌우 세로선 후 가운데 가로선과 아랫가로선 순서로 확인됨', [
+    source('사회통합프로그램 한글 자모음 교재', 'workbook'),
+    source('Wikimedia Commons bieup stroke order', 'web', 'https://commons.wikimedia.org/wiki/File:%E3%85%82_(bieup)_stroke_order.png'),
+  ]),
+  ㅅ: review('confirmed', '교재와 Wikimedia 파일 페이지 기준으로 현재 2획 구조를 유지할 수 있음', [
+    source('사회통합프로그램 한글 자모음 교재', 'workbook'),
+    source('Wikimedia Commons siot stroke order', 'web', 'https://commons.wikimedia.org/wiki/File:%E3%85%85_(siot)_stroke_order.png'),
+  ]),
+  ㅇ: review('confirmed', '교재와 Wikimedia 파일 페이지 기준으로 원형 단획 구조를 유지할 수 있음', [
+    source('사회통합프로그램 한글 자모음 교재', 'workbook'),
+    source('Wikimedia Commons ieung stroke order', 'web', 'https://commons.wikimedia.org/wiki/File:%E3%85%87_(ieung)_stroke_order.png'),
+  ]),
+  ㅈ: review('confirmed', '교재와 Wikimedia 파일 페이지 기준으로 현재 3획 구조를 유지할 수 있음', [
+    source('사회통합프로그램 한글 자모음 교재', 'workbook'),
+    source('Wikimedia Commons jieut stroke order', 'web', 'https://commons.wikimedia.org/wiki/File:%E3%85%88_(jieut)_stroke_order.png'),
+  ]),
+  ㅊ: review('confirmed', '교재와 Wikimedia 파일 페이지 기준으로 현재 4획 구조를 유지할 수 있음', [
+    source('사회통합프로그램 한글 자모음 교재', 'workbook'),
+    source('Wikimedia Commons chieut stroke order', 'web', 'https://commons.wikimedia.org/wiki/File:%E3%85%8A_(chieut)_stroke_order.png'),
+  ]),
+  ㅋ: review('confirmed', '교재와 Wikimedia 이미지 모두 윗가로, 오른쪽 세로, 가운데 가로 순서를 가리킴', [
+    source('사회통합프로그램 한글 자모음 교재', 'workbook'),
+    source('Wikimedia Commons kieuk stroke order', 'web', 'https://commons.wikimedia.org/wiki/File:%E3%85%8B_(kieuk)_stroke_order.png'),
+  ]),
+  ㅌ: review('confirmed', '교재와 Wikimedia 파일 페이지 기준으로 현재 4획 구조를 유지할 수 있음', [
+    source('사회통합프로그램 한글 자모음 교재', 'workbook'),
+    source('Wikimedia Commons tieut stroke order', 'web', 'https://commons.wikimedia.org/wiki/File:%E3%85%8C_(tieut)_stroke_order.png'),
+  ]),
+  ㅍ: review('confirmed', '교재와 Wikimedia 이미지 모두 윗가로, 안쪽 세로 2개, 아랫가로 구조로 일치함', [
+    source('사회통합프로그램 한글 자모음 교재', 'workbook'),
+    source('Wikimedia Commons pieup stroke order', 'web', 'https://commons.wikimedia.org/wiki/File:%E3%85%8D_(pieup)_stroke_order.png'),
+  ]),
+  ㅎ: review('confirmed', '교재와 Wikimedia 이미지 모두 윗가로, 가운데 가로, 아래 원 순서로 일치함', [
+    source('사회통합프로그램 한글 자모음 교재', 'workbook'),
+    source('Wikimedia Commons hieut stroke order', 'web', 'https://commons.wikimedia.org/wiki/File:%E3%85%8E_(hieut)_stroke_order.png'),
+  ]),
+  ㅏ: review('confirmed', '교재와 Wikimedia 파일 페이지 기준으로 현재 2획 구조를 유지할 수 있음', [
+    source('사회통합프로그램 한글 자모음 교재', 'workbook'),
+    source('Wikimedia Commons a stroke order', 'web', 'https://commons.wikimedia.org/wiki/File:%E3%85%8F_(a)_stroke_order.png'),
+  ]),
+  ㅑ: review('confirmed', '교재와 Wikimedia 파일 페이지 기준으로 현재 3획 구조를 유지할 수 있음', [
+    source('사회통합프로그램 한글 자모음 교재', 'workbook'),
+    source('Wikimedia Commons ya stroke order', 'web', 'https://commons.wikimedia.org/wiki/File:%E3%85%91_(ya)_stroke_order.png'),
+  ]),
+  ㅓ: review('confirmed', '교재와 Wikimedia 이미지 모두 세로 후 왼쪽 가로 순서로 일치함', [
+    source('사회통합프로그램 한글 자모음 교재', 'workbook'),
+    source('Wikimedia Commons eo stroke order', 'web', 'https://commons.wikimedia.org/wiki/File:%E3%85%93_(eo)_stroke_order.png'),
+  ]),
+  ㅕ: review('confirmed', '교재 확대본과 Wikimedia 파일 페이지 모두 세로 후 왼쪽 가로 2개 구조를 가리킴', [
+    source('사회통합프로그램 한글 자모음 교재', 'workbook'),
+    source('Wikimedia Commons yeo stroke order', 'web', 'https://commons.wikimedia.org/wiki/File:%E3%85%95_(yeo)_stroke_order.png'),
+  ]),
+  ㅗ: review('confirmed', '교재와 Wikimedia 이미지 모두 세로 후 아래 가로 순서로 일치함', [
+    source('사회통합프로그램 한글 자모음 교재', 'workbook'),
+    source('Wikimedia Commons o stroke order', 'web', 'https://commons.wikimedia.org/wiki/File:%E3%85%97_(o)_stroke_order.png'),
+  ]),
+  ㅛ: review('confirmed', '교재와 Wikimedia 파일 페이지 기준으로 현재 3획 구조를 유지할 수 있음', [
+    source('사회통합프로그램 한글 자모음 교재', 'workbook'),
+    source('Wikimedia Commons yo stroke order', 'web', 'https://commons.wikimedia.org/wiki/File:%E3%85%9B_(yo)_stroke_order.png'),
+  ]),
+  ㅜ: review('confirmed', '교재와 Wikimedia 파일 페이지 기준으로 현재 2획 구조를 유지할 수 있음', [
+    source('사회통합프로그램 한글 자모음 교재', 'workbook'),
+    source('Wikimedia Commons u stroke order', 'web', 'https://commons.wikimedia.org/wiki/File:%E3%85%9C_(u)_stroke_order.png'),
+  ]),
+  ㅠ: review('confirmed', '교재 확대본과 Wikimedia 파일 페이지 모두 짧은 세로 2개 후 아래 가로 구조를 가리킴', [
+    source('사회통합프로그램 한글 자모음 교재', 'workbook'),
+    source('Wikimedia Commons yu stroke order', 'web', 'https://commons.wikimedia.org/wiki/File:%E3%85%A0_(yu)_stroke_order.png'),
+  ]),
+  ㅡ: review('confirmed', '교재와 Wikimedia 파일 페이지 기준으로 단일 가로획 구조를 유지할 수 있음', [
+    source('사회통합프로그램 한글 자모음 교재', 'workbook'),
+    source('Wikimedia Commons eu stroke order', 'web', 'https://commons.wikimedia.org/wiki/File:%E3%85%A1_(eu)_stroke_order.png'),
+  ]),
+  ㅣ: review('confirmed', '교재와 Wikimedia 파일 페이지 기준으로 단일 세로획 구조를 유지할 수 있음', [
+    source('사회통합프로그램 한글 자모음 교재', 'workbook'),
+    source('Wikimedia Commons i stroke order', 'web', 'https://commons.wikimedia.org/wiki/File:%E3%85%A3_(i)_stroke_order.png'),
+  ]),
+};
+
+const exampleWordsById: Record<string, ExampleWord[]> = {
+  ㄱ: words(
+    { id: 'g-bag', word: '가방', gloss: 'bag', difficulty: 'starter', highlightJamo: 'ㄱ' },
+    { id: 'g-meat', word: '고기', gloss: 'meat', difficulty: 'basic', highlightJamo: 'ㄱ' },
+  ),
+  ㄴ: words(
+    { id: 'n-tree', word: '나무', gloss: 'tree', difficulty: 'starter', highlightJamo: 'ㄴ' },
+    { id: 'n-note', word: '노트', gloss: 'notebook', difficulty: 'basic', highlightJamo: 'ㄴ' },
+  ),
+  ㄷ: words(
+    { id: 'd-moon', word: '달', gloss: 'moon', difficulty: 'starter', highlightJamo: 'ㄷ' },
+    { id: 'd-tofu', word: '두부', gloss: 'tofu', difficulty: 'basic', highlightJamo: 'ㄷ' },
+  ),
+  ㄹ: words(
+    { id: 'r-ramen', word: '라면', gloss: 'ramen', difficulty: 'starter', highlightJamo: 'ㄹ' },
+    { id: 'r-sand', word: '모래', gloss: 'sand', difficulty: 'basic', highlightJamo: 'ㄹ' },
+  ),
+  ㅁ: words(
+    { id: 'm-head', word: '머리', gloss: 'head', difficulty: 'starter', highlightJamo: 'ㅁ' },
+    { id: 'm-hat', word: '모자', gloss: 'hat', difficulty: 'starter', highlightJamo: 'ㅁ' },
+  ),
+  ㅂ: words(
+    { id: 'b-sea', word: '바다', gloss: 'sea', difficulty: 'starter', highlightJamo: 'ㅂ' },
+    { id: 'b-pants', word: '바지', gloss: 'pants', difficulty: 'basic', highlightJamo: 'ㅂ' },
+  ),
+  ㅅ: words(
+    { id: 's-apple', word: '사과', gloss: 'apple', difficulty: 'starter', highlightJamo: 'ㅅ' },
+    { id: 's-watermelon', word: '수박', gloss: 'watermelon', difficulty: 'basic', highlightJamo: 'ㅅ' },
+  ),
+  ㅇ: words(
+    { id: 'ieung-child', word: '아이', gloss: 'child', difficulty: 'starter', highlightJamo: 'ㅇ' },
+    { id: 'ieung-cucumber', word: '오이', gloss: 'cucumber', difficulty: 'starter', highlightJamo: 'ㅇ' },
+  ),
+  ㅈ: words(
+    { id: 'j-seat', word: '자리', gloss: 'seat', difficulty: 'starter', highlightJamo: 'ㅈ' },
+    { id: 'j-house', word: '집', gloss: 'house', difficulty: 'basic', highlightJamo: 'ㅈ' },
+  ),
+  ㅊ: words(
+    { id: 'ch-toothpaste', word: '치약', gloss: 'toothpaste', difficulty: 'starter', highlightJamo: 'ㅊ' },
+    { id: 'ch-skirt', word: '치마', gloss: 'skirt', difficulty: 'basic', highlightJamo: 'ㅊ' },
+  ),
+  ㅋ: words(
+    { id: 'k-nose', word: '코', gloss: 'nose', difficulty: 'starter', highlightJamo: 'ㅋ' },
+    { id: 'k-knife', word: '칼', gloss: 'knife', difficulty: 'basic', highlightJamo: 'ㅋ' },
+  ),
+  ㅌ: words(
+    { id: 't-rabbit', word: '토끼', gloss: 'rabbit', difficulty: 'starter', highlightJamo: 'ㅌ' },
+    { id: 't-sun', word: '태양', gloss: 'sun', difficulty: 'basic', highlightJamo: 'ㅌ' },
+  ),
+  ㅍ: words(
+    { id: 'p-grape', word: '포도', gloss: 'grape', difficulty: 'starter', highlightJamo: 'ㅍ' },
+    { id: 'p-grass', word: '풀', gloss: 'grass', difficulty: 'basic', highlightJamo: 'ㅍ' },
+  ),
+  ㅎ: words(
+    { id: 'h-hippo', word: '하마', gloss: 'hippo', difficulty: 'starter', highlightJamo: 'ㅎ' },
+    { id: 'h-tissue', word: '휴지', gloss: 'tissue', difficulty: 'basic', highlightJamo: 'ㅎ' },
+  ),
+  ㅏ: words(
+    { id: 'a-baby', word: '아기', gloss: 'baby', difficulty: 'starter', highlightJamo: 'ㅏ' },
+    { id: 'a-bag', word: '가방', gloss: 'bag', difficulty: 'starter', highlightJamo: 'ㅏ' },
+  ),
+  ㅑ: words(
+    { id: 'ya-baseball', word: '야구', gloss: 'baseball', difficulty: 'starter', highlightJamo: 'ㅑ' },
+    { id: 'ya-socks', word: '양말', gloss: 'socks', difficulty: 'basic', highlightJamo: 'ㅑ' },
+  ),
+  ㅓ: words(
+    { id: 'eo-bus', word: '버스', gloss: 'bus', difficulty: 'starter', highlightJamo: 'ㅓ' },
+    { id: 'eo-mother', word: '어머니', gloss: 'mother', difficulty: 'basic', highlightJamo: 'ㅓ' },
+  ),
+  ㅕ: words(
+    { id: 'yeo-fox', word: '여우', gloss: 'fox', difficulty: 'starter', highlightJamo: 'ㅕ' },
+    { id: 'yeo-winter', word: '겨울', gloss: 'winter', difficulty: 'basic', highlightJamo: 'ㅕ' },
+  ),
+  ㅗ: words(
+    { id: 'o-cucumber', word: '오이', gloss: 'cucumber', difficulty: 'starter', highlightJamo: 'ㅗ' },
+    { id: 'o-grape', word: '포도', gloss: 'grape', difficulty: 'starter', highlightJamo: 'ㅗ' },
+  ),
+  ㅛ: words(
+    { id: 'yo-cooking', word: '요리', gloss: 'cooking', difficulty: 'starter', highlightJamo: 'ㅛ' },
+    { id: 'yo-yo', word: '요요', gloss: 'yo-yo', difficulty: 'basic', highlightJamo: 'ㅛ' },
+  ),
+  ㅜ: words(
+    { id: 'u-milk', word: '우유', gloss: 'milk', difficulty: 'starter', highlightJamo: 'ㅜ' },
+    { id: 'u-shoes', word: '구두', gloss: 'shoes', difficulty: 'basic', highlightJamo: 'ㅜ' },
+  ),
+  ㅠ: words(
+    { id: 'yu-glass', word: '유리', gloss: 'glass', difficulty: 'starter', highlightJamo: 'ㅠ' },
+    { id: 'yu-tissue', word: '휴지', gloss: 'tissue', difficulty: 'basic', highlightJamo: 'ㅠ' },
+  ),
+  ㅡ: words(
+    { id: 'eu-picture', word: '그림', gloss: 'picture', difficulty: 'starter', highlightJamo: 'ㅡ' },
+    { id: 'eu-swing', word: '그네', gloss: 'swing', difficulty: 'basic', highlightJamo: 'ㅡ' },
+  ),
+  ㅣ: words(
+    { id: 'i-blanket', word: '이불', gloss: 'blanket', difficulty: 'starter', highlightJamo: 'ㅣ' },
+    { id: 'i-train', word: '기차', gloss: 'train', difficulty: 'basic', highlightJamo: 'ㅣ' },
+  ),
+};
+
+export const jamoItems: JamoItem[] = baseJamoItems.map((item) => ({
+  ...item,
+  examples: exampleWordsById[item.id] ?? [],
+  validation: validationById[item.id],
+}));
 
 export const groupMeta = {
   consonant: {

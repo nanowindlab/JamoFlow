@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import type { JamoItem } from '../types';
 
 type StrokeWorkbookProps = {
   item: JamoItem;
+  onContinueToWriting?: () => void;
 };
 
 function MiniGlyph({ item, visibleCount }: { item: JamoItem; visibleCount: number }) {
@@ -23,8 +25,10 @@ function MiniGlyph({ item, visibleCount }: { item: JamoItem; visibleCount: numbe
   );
 }
 
-export function StrokeWorkbook({ item }: StrokeWorkbookProps) {
+export function StrokeWorkbook({ item, onContinueToWriting }: StrokeWorkbookProps) {
+  const [showAllSteps, setShowAllSteps] = useState(false);
   const cells = Array.from({ length: 6 }, (_, index) => index + 1);
+  const previewLimit = showAllSteps ? 6 : 3;
 
   return (
     <section className="workbook-card">
@@ -33,13 +37,18 @@ export function StrokeWorkbook({ item }: StrokeWorkbookProps) {
           <p className="eyebrow">워크북 스타일</p>
           <h3>단계별 따라 쓰기</h3>
         </div>
-        <span>{item.strokeCount}칸 활용</span>
+        <div className="workbook-header-actions">
+          <span>{item.strokeCount}칸 활용</span>
+          <button type="button" className="flow-button" onClick={() => setShowAllSteps((current) => !current)}>
+            {showAllSteps ? '간단히 보기' : '더 보기'}
+          </button>
+        </div>
       </div>
 
       <div className="workbook-grid">
         {cells.map((cell) => (
           <div key={`preview-${cell}`} className="workbook-cell">
-            {cell <= item.strokeCount ? (
+            {cell <= item.strokeCount && cell <= previewLimit ? (
               <>
                 <div className="workbook-step">Step {cell}</div>
                 <MiniGlyph item={item} visibleCount={cell} />
@@ -52,10 +61,20 @@ export function StrokeWorkbook({ item }: StrokeWorkbookProps) {
 
         {cells.map((cell) => (
           <div key={`practice-${cell}`} className="workbook-cell workbook-cell--blank">
-            <span className="practice-label">{cell === 1 ? '직접 써 보기' : ''}</span>
+            <span className="practice-label">
+              {cell === 1 && cell <= previewLimit ? '직접 써 보기' : ''}
+            </span>
           </div>
         ))}
       </div>
+
+      {onContinueToWriting ? (
+        <div className="flow-actions">
+          <button type="button" className="flow-button flow-button--strong" onClick={onContinueToWriting}>
+            직접 써 보기
+          </button>
+        </div>
+      ) : null}
     </section>
   );
 }
