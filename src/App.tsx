@@ -35,11 +35,11 @@ function App() {
     <main className="app-shell">
       <section className="hero-panel">
         <div className="hero-copy">
-          <p className="eyebrow">GitHub → Vercel 배포용 시작점</p>
+          <p className="eyebrow">한글 자모 쓰기 학습</p>
           <h1>JamoFlow</h1>
           <p className="hero-description">
-            한글 자음과 모음의 글자 쓰는 순서를 보고, 따라 쓰고, 다음 단계로
-            확장할 수 있는 학습 앱 프로토타입입니다.
+            한글 자음과 모음의 글자 쓰는 순서를 보고, 따라 쓰며 익히는 학습
+            앱입니다.
           </p>
 
           <div className="hero-metrics">
@@ -52,8 +52,8 @@ function App() {
               <span>학습 모드</span>
             </div>
             <div>
-              <strong>Vercel</strong>
-              <span>정적 배포 준비</span>
+              <strong>단계형</strong>
+              <span>획순 학습 흐름</span>
             </div>
           </div>
         </div>
